@@ -309,7 +309,7 @@
     function setAuthMode(mode) {
       authMode = mode;
       document.getElementById("login-mode-btn").classList.toggle("active", mode === "login");
-      document.getElementById("register-mode-btn").classList.toggle("active", mode === "register");
+      // document.getElementById("register-mode-btn").classList.toggle("active", mode === "register");
       document.getElementById("auth-submit").textContent = mode === "login" ? "Entrar" : "Crear usuario";
       document.getElementById("auth-helper").textContent = mode === "login"
         ? "Usa una cuenta existente para ingresar al panel."
