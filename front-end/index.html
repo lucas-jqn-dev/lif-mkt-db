@@ -297,9 +297,9 @@
     }
 
     function getApiBase() {
-      const input = document.getElementById("auth-api-base");
-      const value = (input?.value || localStorage.getItem(API_BASE_KEY) || DEFAULT_API_BASE).trim();
-      return value.replace(/\/+$/, "");
+      // const input = document.getElementById("auth-api-base");
+      // const value = (input?.value || localStorage.getItem(API_BASE_KEY) || DEFAULT_API_BASE).trim();
+      return DEFAULT_API_BASE.replace(/\/+$/, "");
     }
 
     function saveApiBase() {
@@ -461,7 +461,7 @@
 
         applySession(response.user, response.token);
         document.getElementById("auth-form").reset();
-        document.getElementById("auth-api-base").value = getApiBase();
+        // document.getElementById("auth-api-base").value = getApiBase();
         await loadItems();
         showToast(authMode === "login" ? "Sesion iniciada correctamente." : "Usuario creado y autenticado.", "ok");
       } catch (error) {
@@ -1205,7 +1205,7 @@
 
     buildFilterBar();
     setAuthMode("login");
-    document.getElementById("auth-api-base").value = localStorage.getItem(API_BASE_KEY) || DEFAULT_API_BASE;
+    // document.getElementById("auth-api-base").value = localStorage.getItem(API_BASE_KEY) || DEFAULT_API_BASE;
     setAuthenticatedUI(Boolean(authToken && currentUser));
 
     if (authToken && currentUser) {
