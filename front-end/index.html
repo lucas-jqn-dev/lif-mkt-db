@@ -571,18 +571,22 @@
           <div class="item-meta">
             <div class="item-meta-row">${fDate(item.fecha)}${item.hora ? " · " + esc(item.hora) : ""} <span style="color:var(--primary);font-size:10px">(${daysAway(item.fecha)})</span></div>
             ${item.lugar?.nombre ? `<div class="item-meta-row">${esc(item.lugar.nombre)}</div>` : ""}
-            <div class="item-meta-row">Stand: ${item.need_stand ? "Si" : "No"} · Latas: ${Number(item.cans_amount || 0)} · Costo: ${money(item.cans_cost)}</div>
+            <div class="item-meta-row">Stand: ${item.need_stand ? "SI" : "NO"} · Cantidad Latas: ${Number(item.cans_amount || 0)}</div>
             ${item.telefono || item.correo ? `<div class="item-meta-row">${item.telefono ? esc(item.telefono) : ""}${item.telefono && item.correo ? " · " : ""}${item.correo ? esc(item.correo) : ""}</div>` : ""}
             ${item.obs ? `<div class="item-meta-row" style="margin-top:3px">${esc(item.obs.slice(0, 80))}${item.obs.length > 80 ? "..." : ""}</div>` : ""}
           </div>
           <div class="item-price-stack">
             <div class="item-price-line">
-              <span class="item-price-label">Evento</span>
+              <span class="item-price-label">Costo Evento</span>
               <span class="item-price">${money(item.precio)}</span>
             </div>
             <div class="item-price-line alt">
-              <span class="item-price-label">Latas</span>
+              <span class="item-price-label">Costo en Latas</span>
               <span class="item-price-sub">${money(item.cans_cost)}</span>
+            </div>
+            <div class="item-price-line alt">
+              <span class="item-price-label">Ctd. Latas</span>
+              <span class="item-price-sub">${Number(item.cans_amount || 0)}</span>
             </div>
           </div>
           <div class="item-actions">
