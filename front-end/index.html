@@ -44,7 +44,7 @@
         <img src="assets/logo-lif-black.png" alt="LIF Energy" class="mobile-brand-image">
         <!-- <strong>LIF Energy</strong> -->
       </div>
-      <button class="mobile-new-btn" type="button" onclick="openModal()">Nueva</button>
+      <button class="mobile-new-btn" type="button" onclick="openModal()">+ Agregar</button>
     </div>
     <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="closeMobileSidebar()"></div>
     <aside class="sidebar">
@@ -938,21 +938,21 @@
 
       activeWithLocation.forEach((item) => {
         const marker = L.circleMarker([item.lugar.lat, item.lugar.lng], {
-          radius: 8,
+          radius: 10,
           weight: 2,
           color: CAT_COLORS[item.categoria] || "#60a5fa",
           fillColor: CAT_COLORS[item.categoria] || "#60a5fa",
-          fillOpacity: 1
+          fillOpacity: 1 
         }).addTo(displayMap);
 
         marker.bindPopup(`
           <strong>${esc(item.titulo)}</strong><br>
-          ${esc(item.categoria)}<br>
-          ${esc(item.estado)}<br>
-          ${item.need_stand ? "Necesita stand" : "No necesita stand"}<br>
-          ${Number(item.cans_amount || 0)} latas · ${money(item.cans_cost)}<br>
-          ${fDate(item.fecha)}${item.hora ? " " + esc(item.hora) : ""}<br>
-          ${money(item.precio)}
+          • ${esc(item.categoria)}<br>
+          • ${esc(item.estado)}<br>
+          • ${item.need_stand ? "STAND: SI" : "STAND: NO"}<br>
+          • ${Number(item.cans_amount || 0)} Latas<br>
+          • ${fDate(item.fecha)}${item.hora ? " " + esc(item.hora) : ""}<br>
+          • ${money(item.precio)}
         `);
 
         dispMarkers.push(marker);
@@ -1020,6 +1020,11 @@
         return;
       }
 
+      const mobileSidebarWasOpen = document.body.classList.contains("mobile-sidebar-open");
+      if (mobileSidebarWasOpen) {
+        closeMobileSidebar();
+      }
+
       resetForm();
       editingId = id;
       document.getElementById("modal-title").textContent = id ? "Editar accion" : "Nueva accion de marketing";
@@ -1048,9 +1053,9 @@
         }
       }
 
-      document.getElementById("modal-overlay").classList.add("open");
+      const showModal = () => {
+        document.getElementById("modal-overlay").classList.add("open");
 
-      setTimeout(() => {
         if (!pickerMap) {
           pickerMap = L.map("picker-map").setView([-33.4489, -70.6693], 5);
           L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -1075,7 +1080,9 @@
         } else {
           pickerMap.setView([-34.57339, -58.45998], 9);
         }
-      }, 120);
+      };
+
+      setTimeout(showModal, mobileSidebarWasOpen ? 240 : 120);
     }
 
     function closeModal() {

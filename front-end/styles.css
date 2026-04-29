@@ -144,11 +144,8 @@ body.authenticated .auth-screen {
     text-overflow: ellipsis;
 }
 .mobile-brand-image {
-    width: 42px;
+    width: 75px;
     height: auto;
-    border-radius: 8px;
-    background: #fff;
-    padding: 4px 6px;
 }
 .hamburger-btn {
     width: 42px;
