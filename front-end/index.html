@@ -15,12 +15,7 @@
       <div class="auth-card-header">
         <p class="auth-eyebrow">LIF ENERGY</p>
         <h1>Panel de acciones de marketing</h1>
-        <p class="auth-copy">Inicia sesion para crear items y administrarlos desde la API REST conectada a MongoDB.</p>
-      </div>
-
-      <div class="auth-mode-switch">
-        <button class="auth-mode-btn active" id="login-mode-btn" type="button" onclick="setAuthMode('login')">Iniciar sesion</button>
-        <!-- <button class="auth-mode-btn" id="register-mode-btn" type="button" onclick="setAuthMode('register')">Crear usuario</button> -->
+        <p class="auth-copy">Inicia sesion con usuario y clave LIF.</p>
       </div>
 
       <form class="auth-form" id="auth-form">
@@ -85,8 +80,11 @@
     <main class="main">
       <section id="dashboard" class="section active">
         <div class="section-header">
-          <h2>Dashboard</h2>
-          <p>Resumen ejecutivo de todas las acciones de marketing</p>
+          <div>
+            <h2>Dashboard</h2>
+            <p>Resumen ejecutivo de todas las acciones de marketing</p>
+          </div>
+          <button class="btn-refresh" type="button" onclick="refreshDashboardData()">Actualizar informacion</button>
         </div>
         <div class="stats-grid" id="stats-grid"></div>
         <div class="dashboard-analytics" id="dashboard-analytics"></div>
@@ -276,9 +274,10 @@
     const USER_KEY = "mhub-auth-user";
     const API_BASE_KEY = "mhub-api-base";
 
-    let authMode = "login";
     let authToken = localStorage.getItem(TOKEN_KEY) || "";
     let currentUser = readJSON(USER_KEY);
+    let autoRefreshTimer = null;
+    let isDashboardLoading = false;
     let items = [];
     let editingId = null;
     let pendingDelId = null;
@@ -304,17 +303,6 @@
 
     function saveApiBase() {
       localStorage.setItem(API_BASE_KEY, getApiBase());
-    }
-
-    function setAuthMode(mode) {
-      authMode = mode;
-      document.getElementById("login-mode-btn").classList.toggle("active", mode === "login");
-      // document.getElementById("register-mode-btn").classList.toggle("active", mode === "register");
-      document.getElementById("auth-submit").textContent = mode === "login" ? "Entrar" : "Crear usuario";
-      document.getElementById("auth-helper").textContent = mode === "login"
-        ? "Usa una cuenta existente para ingresar al panel."
-        : "Si no tienes usuario, puedes crearlo aqui mismo.";
-      document.getElementById("auth-password").autocomplete = mode === "login" ? "current-password" : "new-password";
     }
 
     function setAuthenticatedUI(isAuthenticated) {
@@ -433,12 +421,31 @@
       return data;
     }
 
+    function stopAutoRefresh() {
+      if (autoRefreshTimer) {
+        clearInterval(autoRefreshTimer);
+        autoRefreshTimer = null;
+      }
+    }
+
+    function startAutoRefresh() {
+      stopAutoRefresh();
+      if (!authToken) {
+        return;
+      }
+
+      autoRefreshTimer = setInterval(() => {
+        loadItems({ silent: true });
+      }, 30000);
+    }
+
     function applySession(user, token) {
       currentUser = user;
       authToken = token;
       localStorage.setItem(TOKEN_KEY, token);
       localStorage.setItem(USER_KEY, JSON.stringify(user));
       setAuthenticatedUI(true);
+      startAutoRefresh();
     }
 
     async function submitAuth(event) {
@@ -453,36 +460,57 @@
       }
 
       try {
-        const endpoint = authMode === "login" ? "/auth/login" : "/auth/register";
-        const response = await apiFetch(endpoint, {
+        const response = await apiFetch("/auth/login", {
           method: "POST",
           body: JSON.stringify({ username, password })
         });
 
         applySession(response.user, response.token);
         document.getElementById("auth-form").reset();
-        // document.getElementById("auth-api-base").value = getApiBase();
         await loadItems();
-        showToast(authMode === "login" ? "Sesion iniciada correctamente." : "Usuario creado y autenticado.", "ok");
+        showToast("Sesion iniciada correctamente.", "ok");
       } catch (error) {
         showToast(error.message, "error");
       }
     }
 
-    async function loadItems() {
+    async function loadItems(options = {}) {
+      const { silent = false, showSkeleton = !silent } = options;
+
+      if (showSkeleton) {
+        isDashboardLoading = true;
+        renderDashboard();
+      }
+
       try {
         const response = await apiFetch("/items");
         items = Array.isArray(response) ? response.map(normalizeItem) : [];
+        isDashboardLoading = false;
         refreshAll();
       } catch (error) {
+        isDashboardLoading = false;
+        refreshAll();
         if (error.status === 401) {
           logout(false);
         }
-        showToast(error.message, "error");
+        if (!silent) {
+          showToast(error.message, "error");
+        }
       }
     }
 
+    async function refreshDashboardData() {
+      if (!authToken) {
+        showToast("Necesitas iniciar sesion.", "warn");
+        return;
+      }
+
+      await loadItems({ showSkeleton: true });
+      showToast("Informacion actualizada.", "ok");
+    }
+
     function logout(showMessage = true) {
+      stopAutoRefresh();
       authToken = "";
       currentUser = null;
       items = [];
@@ -677,7 +705,79 @@
       `;
     }
 
+    function renderDashboardSkeleton() {
+      document.getElementById("stats-grid").innerHTML = `
+        <div class="stat-card skeleton-card"><div class="skeleton-line short"></div><div class="skeleton-line xl"></div><div class="skeleton-line mid"></div></div>
+        <div class="stat-card skeleton-card"><div class="skeleton-line short"></div><div class="skeleton-line xl"></div><div class="skeleton-line mid"></div></div>
+        <div class="stat-card skeleton-card"><div class="skeleton-line short"></div><div class="skeleton-line xl"></div><div class="skeleton-line mid"></div></div>
+        <div class="stat-card skeleton-card"><div class="skeleton-line short"></div><div class="skeleton-line xl"></div><div class="skeleton-line mid"></div></div>
+      `;
+
+      document.getElementById("dashboard-analytics").innerHTML = `
+        <div class="analytics-grid">
+          <article class="chart-card skeleton-card">
+            <div class="skeleton-line mid"></div>
+            <div class="skeleton-line long"></div>
+            <div class="chart-card-body skeleton-chart-body">
+              <div class="skeleton-donut"></div>
+              <div class="chart-legend">
+                <div class="skeleton-line long"></div>
+                <div class="skeleton-line long"></div>
+                <div class="skeleton-line mid"></div>
+              </div>
+            </div>
+          </article>
+          <article class="chart-card skeleton-card">
+            <div class="skeleton-line mid"></div>
+            <div class="skeleton-line long"></div>
+            <div class="chart-card-body skeleton-chart-body">
+              <div class="skeleton-donut"></div>
+              <div class="chart-legend">
+                <div class="skeleton-line long"></div>
+                <div class="skeleton-line long"></div>
+                <div class="skeleton-line mid"></div>
+              </div>
+            </div>
+          </article>
+          <article class="cans-indicator-card skeleton-card">
+            <div class="skeleton-line short"></div>
+            <div class="skeleton-line xl"></div>
+            <div class="skeleton-line mid"></div>
+            <div class="skeleton-line long"></div>
+          </article>
+        </div>
+      `;
+
+      document.getElementById("pending-by-cat").innerHTML = `
+        <div class="cards-grid">
+          <div class="item-card skeleton-card">
+            <div class="skeleton-line long"></div>
+            <div class="skeleton-line mid"></div>
+            <div class="skeleton-line long"></div>
+            <div class="skeleton-line short"></div>
+          </div>
+          <div class="item-card skeleton-card">
+            <div class="skeleton-line long"></div>
+            <div class="skeleton-line mid"></div>
+            <div class="skeleton-line long"></div>
+            <div class="skeleton-line short"></div>
+          </div>
+          <div class="item-card skeleton-card">
+            <div class="skeleton-line long"></div>
+            <div class="skeleton-line mid"></div>
+            <div class="skeleton-line long"></div>
+            <div class="skeleton-line short"></div>
+          </div>
+        </div>
+      `;
+    }
+
     function renderDashboard() {
+      if (isDashboardLoading) {
+        renderDashboardSkeleton();
+        return;
+      }
+
       const activeItems = items.filter((item) => item.estado === "ACTIVA");
       const completedItems = items.filter((item) => item.estado === "REALIZADA");
       const pendingItems = items.filter((item) => item.estado === "ACTIVA" || item.estado === "PAUSADA");
@@ -1204,11 +1304,10 @@
     });
 
     buildFilterBar();
-    setAuthMode("login");
-    // document.getElementById("auth-api-base").value = localStorage.getItem(API_BASE_KEY) || DEFAULT_API_BASE;
     setAuthenticatedUI(Boolean(authToken && currentUser));
 
     if (authToken && currentUser) {
+      startAutoRefresh();
       loadItems();
     } else {
       refreshAll();
