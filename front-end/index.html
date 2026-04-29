@@ -264,10 +264,10 @@
   <script>
     const MONTHS = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
     const CAT_COLORS = {
-      Influencer: "#a78bfa",
-      Publicidad: "#fb923c",
-      Eventos: "#34d399",
-      Otras: "#60a5fa"
+      Influencer: "#7C6EF0",
+      Publicidad: "#F28D00",
+      Eventos: "#19AD03",
+      Otras: "#FF8787"
     };
     const DEFAULT_API_BASE = "https://lif-mkt-db.onrender.com/api";
     const TOKEN_KEY = "mhub-auth-token";
@@ -942,7 +942,7 @@
           weight: 2,
           color: CAT_COLORS[item.categoria] || "#60a5fa",
           fillColor: CAT_COLORS[item.categoria] || "#60a5fa",
-          fillOpacity: 0.8
+          fillOpacity: 1
         }).addTo(displayMap);
 
         marker.bindPopup(`
