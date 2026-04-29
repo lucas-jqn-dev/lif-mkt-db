@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +10,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
   <section class="auth-screen" id="auth-screen">
     <div class="auth-card">
@@ -25,7 +27,8 @@
         </div>
         <div class="form-group">
           <label>Password</label>
-          <input type="password" id="auth-password" placeholder="Ingresa tu password" autocomplete="current-password" required>
+          <input type="password" id="auth-password" placeholder="Ingresa tu password" autocomplete="current-password"
+            required>
         </div>
         <button class="btn-auth-submit" id="auth-submit" type="submit">Entrar</button>
         <p class="auth-helper" id="auth-helper">Usa una cuenta existente para ingresar al panel.</p>
@@ -100,7 +103,7 @@
         <div class="tl-filter">
           <label>Proximos</label>
           <span class="tl-days" id="days-label">20 dias</span>
-          <input type="range" id="days-range" min="7" max="365" value="20" step="7" oninput="renderTimeline()">          
+          <input type="range" id="days-range" min="7" max="365" value="20" step="7" oninput="renderTimeline()">
           <select id="tl-cat" onchange="renderTimeline()">
             <option value="">Todas las categorias</option>
             <option value="Influencer">Influencer</option>
@@ -122,13 +125,21 @@
       <section id="mapa" class="section">
         <div class="section-header">
           <h2>Mapa de acciones activas</h2>
-          <p>Visualizacion geografica de las acciones con estado ACTIVA</p>
+          <p>Campañas activas en el mapa</p>
         </div>
         <div class="map-legend">
-          <div class="legend-item"><div class="legend-dot" style="background:var(--cat-influencer)"></div>Influencer</div>
-          <div class="legend-item"><div class="legend-dot" style="background:var(--cat-publicidad)"></div>Publicidad</div>
-          <div class="legend-item"><div class="legend-dot" style="background:var(--cat-eventos)"></div>Eventos</div>
-          <div class="legend-item"><div class="legend-dot" style="background:var(--cat-otras)"></div>Otras</div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background:var(--cat-influencer)"></div>Influencer
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background:var(--cat-publicidad)"></div>Publicidad
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background:var(--cat-eventos)"></div>Eventos
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background:var(--cat-otras)"></div>Otras
+          </div>
         </div>
         <div id="map-display"></div>
       </section>
@@ -136,7 +147,7 @@
       <section id="todos" class="section">
         <div class="section-header">
           <h2>Todas las acciones</h2>
-          <p>CRUD completo conectado a la API</p>
+          <p>Listado de todas las acciones creadas</p>
         </div>
         <div class="filter-bar" id="fbar"></div>
         <div class="table-wrap">
@@ -160,6 +171,7 @@
 
     <div class="modal-overlay" id="modal-overlay">
       <div class="modal">
+        <button class="modal-floating-close" type="button" onclick="closeModal()" aria-label="Cerrar modal">×</button>
         <div class="modal-header">
           <h3 id="modal-title">Nueva accion de marketing</h3>
         </div>
@@ -167,7 +179,8 @@
           <div class="form-grid">
             <div class="form-group full">
               <label>Titulo *</label>
-              <input type="text" id="f-titulo" placeholder="Ej: campaña verano con influencer">
+              <input type="text" id="f-titulo" placeholder="Ej: campaña verano con influencer"
+                oninput="this.value = this.value.toUpperCase()">
             </div>
             <div class="form-group">
               <label>Categoria</label>
@@ -229,7 +242,8 @@
             <div class="form-group full">
               <label>Ubicacion - busca o haz clic en el mapa</label>
               <div class="loc-search">
-                <input type="text" id="loc-input" placeholder="Ej: Palermo, Buenos Aires" onkeydown="if(event.key==='Enter'){event.preventDefault();searchLoc();}">
+                <input type="text" id="loc-input" placeholder="Ej: Palermo, Buenos Aires"
+                  onkeydown="if(event.key==='Enter'){event.preventDefault();searchLoc();}">
                 <button type="button" onclick="searchLoc()">Buscar</button>
               </div>
               <div id="picker-map"></div>
@@ -530,12 +544,23 @@
       const cats = ["", "Influencer", "Publicidad", "Eventos", "Otras"];
       const ests = ["ACTIVA", "PAUSADA", "CANCELADA", "REALIZADA"];
 
-      let html = cats.map((value) =>
+      const catHtml = cats.map((value) =>
         `<button class="fchip${value === "" ? " active" : ""}" data-type="cat" data-val="${value}">${value || "Todas"}</button>`
       ).join("");
-      html += ests.map((value) =>
+      const estHtml = ests.map((value) =>
         `<button class="fchip" data-type="est" data-val="${value}">${value}</button>`
       ).join("");
+
+      const html = `
+        <div class="filter-group">
+          <span class="filter-group-title">Categorias</span>
+          <div class="filter-chip-row">${catHtml}</div>
+        </div>
+        <div class="filter-group">
+          <span class="filter-group-title">Estados</span>
+          <div class="filter-chip-row">${estHtml}</div>
+        </div>
+      `;
       bar.innerHTML = html;
 
       bar.querySelectorAll(".fchip").forEach((button) => {
@@ -893,20 +918,20 @@
                 <div class="tl-info">
                   <span class="cat-badge ${catClass(item.categoria)}">${esc(item.categoria)}</span>
                   <span class="estado-badge ${estClass(item.estado)}">${esc(item.estado)}</span>
-                  ${item.hora ? `<span>${esc(item.hora)}</span>` : ""}
+                  <span class="tl-badge ${item.need_stand ? "tl-badge-stand" : "tl-badge-soft"}">${item.need_stand ? "llevar Stand" : "Sin stand"}</span>
+                  <span class="tl-badge tl-badge-cans">${Number(item.cans_amount || 0)} latas</span> 
                   ${item.lugar?.nombre ? `<span>${esc(item.lugar.nombre)}</span>` : ""}
-                  <span>${item.need_stand ? "Stand" : "Sin stand"}</span>
-                  <span>${Number(item.cans_amount || 0)} latas</span>
                 </div>
                 ${(item.obs || item.telefono || item.correo) ? `<div class="tl-obs">${[
-                  item.obs ? esc(item.obs.slice(0, 120)) + (item.obs.length > 120 ? "..." : "") : "",
-                  item.telefono ? "Tel: " + esc(item.telefono) : "",
-                  item.correo ? "Mail: " + esc(item.correo) : ""
-                ].filter(Boolean).join(" · ")}</div>` : ""}
+            item.obs ? esc(item.obs.slice(0, 120)) + (item.obs.length > 120 ? "..." : "") : "",
+            item.telefono ? "<br>Tel: " + esc(item.telefono) : "",
+            item.correo ? "• Mail: " + esc(item.correo) : ""
+          ].filter(Boolean).join(" · ")}</div>` : ""}
               </div>
               <div class="tl-right">
                 <div class="tl-price">${money(item.precio)}</div>
                 <div class="tl-days-away">${daysAway(item.fecha)}</div>
+                <div class="tl-days-away">${esc(item.hora)}</div>
               </div>
             </div>
           </div>`;
@@ -942,7 +967,7 @@
           weight: 2,
           color: CAT_COLORS[item.categoria] || "#60a5fa",
           fillColor: CAT_COLORS[item.categoria] || "#60a5fa",
-          fillOpacity: 1 
+          fillOpacity: 1
         }).addTo(displayMap);
 
         marker.bindPopup(`
@@ -952,7 +977,15 @@
           • ${item.need_stand ? "STAND: SI" : "STAND: NO"}<br>
           • ${Number(item.cans_amount || 0)} Latas<br>
           • ${fDate(item.fecha)}${item.hora ? " " + esc(item.hora) : ""}<br>
-          • ${money(item.precio)}
+          • ${money(item.precio)}<br><br>
+          <a
+            class="map-popup-link"
+            href="https://www.google.com/maps?q=${item.lugar.lat},${item.lugar.lng}"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Abrir en Google Maps
+          </a>
         `);
 
         dispMarkers.push(marker);
@@ -995,11 +1028,12 @@
     function resetForm() {
       editingId = null;
       document.getElementById("modal-title").textContent = "Nueva accion de marketing";
+      clearModalValidation();
       document.getElementById("f-titulo").value = "";
       document.getElementById("f-cat").value = "Influencer";
       document.getElementById("f-est").value = "ACTIVA";
       document.getElementById("f-fecha").value = new Date().toISOString().slice(0, 10);
-      document.getElementById("f-hora").value = "";
+      document.getElementById("f-hora").value = "08:00";
       document.getElementById("f-precio").value = "";
       document.getElementById("f-need-stand").checked = false;
       document.getElementById("f-cans-amount").value = "0";
@@ -1012,6 +1046,22 @@
       document.getElementById("f-loc-name").value = "";
       document.getElementById("loc-input").value = "";
       document.getElementById("loc-display").textContent = "Sin ubicacion seleccionada - haz clic en el mapa";
+    }
+
+    function markFieldInvalid(fieldId, invalid = true) {
+      const field = document.getElementById(fieldId);
+      if (!field) return;
+
+      const group = field.closest(".form-group");
+      if (group) {
+        group.classList.toggle("invalid", invalid);
+      }
+    }
+
+    function clearModalValidation() {
+      document.querySelectorAll(".form-group.invalid").forEach((group) => {
+        group.classList.remove("invalid");
+      });
     }
 
     function openModal(id = null) {
@@ -1104,7 +1154,7 @@
     }
 
     async function reverseGeocode(lat, lng) {
-      try {        
+      try {
         const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=es`);
         const data = await response.json();
         const name = data.display_name || `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
@@ -1117,7 +1167,7 @@
       }
     }
 
-    async function searchLoc() {      
+    async function searchLoc() {
       const query = document.getElementById("loc-input").value.trim();
       if (!query) return;
 
@@ -1149,24 +1199,32 @@
       const lng = parseFloat(document.getElementById("f-lng").value);
       const cansAmount = parseInt(document.getElementById("f-cans-amount").value || "0", 10);
       const cansCost = parseFloat(document.getElementById("f-cans-cost").value || "0");
+      const missingFields = [];
+
+      clearModalValidation();
 
       if (!titulo) {
-        throw new Error("El titulo es obligatorio.");
+        missingFields.push("f-titulo");
       }
       if (!fecha) {
-        throw new Error("La fecha es obligatoria.");
+        missingFields.push("f-fecha");
       }
       if (!hora) {
-        throw new Error("La hora es obligatoria.");
+        missingFields.push("f-hora");
       }
       if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
-        throw new Error("Debes seleccionar una ubicacion en el mapa.");
+        missingFields.push("loc-input");
       }
       if (!Number.isFinite(cansAmount) || cansAmount < 0) {
-        throw new Error("La cantidad de latas debe ser un numero valido.");
+        missingFields.push("f-cans-amount");
       }
       if (!Number.isFinite(cansCost) || cansCost < 0) {
-        throw new Error("El costo total de latas debe ser un numero valido.");
+        missingFields.push("f-cans-cost");
+      }
+
+      if (missingFields.length) {
+        missingFields.forEach((fieldId) => markFieldInvalid(fieldId));
+        throw new Error("Completa los campos obligatorios marcados.");
       }
 
       return {
@@ -1325,4 +1383,5 @@
     }
   </script>
 </body>
+
 </html>
