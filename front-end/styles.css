@@ -17,7 +17,7 @@
     --cat-influencer: #a78bfa;
     --cat-publicidad: #fb923c;
     --cat-eventos: #34d399;
-    --cat-otras: #60a5fa;
+    --cat-otras: #0b76fa;
     --cat-rrss: #38bdf8;
     --accent-glow: rgba(187, 12, 0, 0.3);
     --ease: cubic-bezier(0.22, 1, 0.36, 1);
@@ -870,7 +870,7 @@ body.authenticated .auth-screen {
         border-color 0.25s var(--ease);
 }
 .item-card:hover {
-    transform: translateY(-3px);
+    transform: translateY(-1px);
     border-color: var(--primary);
 }
 .item-card-top {
@@ -955,9 +955,9 @@ body.authenticated .auth-screen {
     color: var(--text);
 }
 .btn-sm.edit:hover {
-    border-color: var(--primary);
-    color: var(--primary);
-    background: rgba(187, 12, 0, 0.08);
+    border-color: var(--warning);
+    color: var(--warning);
+    background: rgba(187, 121, 0, 0.185);
 }
 .btn-sm.del:hover {
     border-color: var(--danger);

@@ -163,7 +163,8 @@
                 <th>Fecha / Hora</th>
                 <th>Estado</th>
                 <th>Costo Evento</th>
-                <th>Ubicacion</th>
+                <th>Stand</th>
+                <th>Contacto</th>
                 <th>Acciones</th>
               </tr>
             </thead>
@@ -1036,7 +1037,8 @@
           <td>${fDate(item.fecha)}${item.hora ? " " + esc(item.hora) : ""}<br><span style="font-size:10px;color:var(--text-muted)">${daysAway(item.fecha)}</span></td>
           <td><span class="estado-badge ${estClass(item.estado)}">${esc(item.estado)}</span></td>
           <td style="color:var(--success);font-weight:600">${money(item.precio)}<br><span style="font-size:10px;color:var(--text-muted)">Latas: ${Number(item.cans_amount || 0)} / ${money(item.cans_cost)}</span></td>
-          <td style="color:var(--text-muted);font-size:11px">${item.lugar?.nombre ? esc(item.lugar.nombre) : "-"}<br><span style="font-size:10px">${item.need_stand ? "Necesita stand" : "Sin stand"}</span>${item.telefono || item.correo ? `<br><span style="font-size:10px">${item.telefono ? esc(item.telefono) : ""}${item.telefono && item.correo ? " · " : ""}${item.correo ? esc(item.correo) : ""}</span>` : ""}</td>
+          <td style="color:var(--info);font-weight:800">${item.need_stand ? "SI" : "NO"}</td>
+          <td style="color:var(--text-muted);font-size:11px">${item.telefono || item.correo ? `<br><span style="font-size:10px">${item.telefono ? esc(item.telefono) : ""}${item.telefono && item.correo ? " · " : ""}${item.correo ? esc(item.correo) : ""}</span>` : ""}</td>
           <td>
             <div class="item-actions">
               <button class="btn-sm edit" type="button" onclick="openModal('${item.id}')">Editar</button>
