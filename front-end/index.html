@@ -109,6 +109,7 @@
             <option value="Influencer">Influencer</option>
             <option value="Publicidad">Publicidad</option>
             <option value="Eventos">Eventos</option>
+            <option value="RRSS">Ads RRSS</option>
             <option value="Otras">Otras</option>
           </select>
           <select id="tl-est" onchange="renderTimeline()">
@@ -136,6 +137,9 @@
           </div>
           <div class="legend-item">
             <div class="legend-dot" style="background:var(--cat-eventos)"></div>Eventos
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background:var(--cat-rrss)"></div>Ads RRSS
           </div>
           <div class="legend-item">
             <div class="legend-dot" style="background:var(--cat-otras)"></div>Otras
@@ -188,6 +192,7 @@
                 <option value="Influencer">Influencer</option>
                 <option value="Publicidad">Publicidad</option>
                 <option value="Eventos">Eventos</option>
+                <option value="RRSS">Ads RRSS</option>
                 <option value="Otras">Otras</option>
               </select>
             </div>
@@ -281,8 +286,10 @@
       Influencer: "#7C6EF0",
       Publicidad: "#F28D00",
       Eventos: "#19AD03",
+      RRSS: "#38bdf8",
       Otras: "#FF8787"
     };
+    const CAT_LABELS = { RRSS: "Ads RRSS" };
     const DEFAULT_API_BASE = "https://lif-mkt-db.onrender.com/api";
     const TOKEN_KEY = "mhub-auth-token";
     const USER_KEY = "mhub-auth-user";
@@ -359,6 +366,10 @@
 
     function catClass(value) {
       return "cat-" + String(value || "").toLowerCase();
+    }
+
+    function catLabel(value) {
+      return CAT_LABELS[value] || value;
     }
 
     function estClass(value) {
@@ -541,11 +552,18 @@
 
     function buildFilterBar() {
       const bar = document.getElementById("fbar");
-      const cats = ["", "Influencer", "Publicidad", "Eventos", "Otras"];
+      const cats = [
+        { val: "", label: "Todas" },
+        { val: "Influencer", label: "Influencer" },
+        { val: "Publicidad", label: "Publicidad" },
+        { val: "Eventos", label: "Eventos" },
+        { val: "RRSS", label: "Ads RRSS" },
+        { val: "Otras", label: "Otras" }
+      ];
       const ests = ["ACTIVA", "PAUSADA", "CANCELADA", "REALIZADA"];
 
-      const catHtml = cats.map((value) =>
-        `<button class="fchip${value === "" ? " active" : ""}" data-type="cat" data-val="${value}">${value || "Todas"}</button>`
+      const catHtml = cats.map(({ val, label }) =>
+        `<button class="fchip${val === "" ? " active" : ""}" data-type="cat" data-val="${val}">${label}</button>`
       ).join("");
       const estHtml = ests.map((value) =>
         `<button class="fchip" data-type="est" data-val="${value}">${value}</button>`
@@ -653,7 +671,7 @@
           <div class="chart-legend-row">
             <div class="chart-legend-label">
               <span class="chart-legend-dot" style="background:${color}"></span>
-              <span>${category}</span>
+              <span>${catLabel(category)}</span>
             </div>
             <strong>${money(value)}</strong>
           </div>`);
@@ -668,7 +686,7 @@
     }
 
     function renderDashboardAnalytics(pendingItems, completedItems) {
-      const categories = ["Influencer", "Publicidad", "Eventos", "Otras"];
+      const categories = ["Influencer", "Publicidad", "Eventos", "RRSS", "Otras"];
       const pendingByCategory = Object.fromEntries(categories.map((category) => [category, 0]));
       const completedByCategory = Object.fromEntries(categories.map((category) => [category, 0]));
 
@@ -848,7 +866,7 @@
 
       renderDashboardAnalytics(pendingItems, completedItems);
 
-      const categories = ["Influencer", "Publicidad", "Eventos", "Otras"];
+      const categories = ["Influencer", "Publicidad", "Eventos", "RRSS", "Otras"];
       const pendingByCategory = pendingItems.filter((item) => categories.includes(item.categoria));
 
       let html = "";
@@ -862,7 +880,7 @@
         html += `
           <div class="cat-group">
             <div class="cat-group-header">
-              <span class="cat-badge ${catClass(category)}">${category}</span>
+              <span class="cat-badge ${catClass(category)}">${catLabel(category)}</span>
               <span class="cat-group-count">${list.length} accion${list.length !== 1 ? "es" : ""}</span>
             </div>
             <div class="cards-grid">${list.map(itemCard).join("")}</div>
@@ -919,7 +937,7 @@
               <div class="tl-content">
                 <div class="tl-title">${esc(item.titulo)}</div>
                 <div class="tl-info">
-                  <span class="cat-badge ${catClass(item.categoria)}">${esc(item.categoria)}</span>
+                  <span class="cat-badge ${catClass(item.categoria)}">${esc(catLabel(item.categoria))}</span>
                   <span class="estado-badge ${estClass(item.estado)}">${esc(item.estado)}</span>
                   <span class="tl-badge ${item.need_stand ? "tl-badge-stand" : "tl-badge-soft"}">${item.need_stand ? "llevar Stand" : "Sin stand"}</span>
                   <span class="tl-badge tl-badge-cans">${Number(item.cans_amount || 0)} latas</span> 

@@ -18,6 +18,7 @@
     --cat-publicidad: #fb923c;
     --cat-eventos: #34d399;
     --cat-otras: #60a5fa;
+    --cat-rrss: #38bdf8;
     --accent-glow: rgba(187, 12, 0, 0.3);
     --ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -802,6 +803,10 @@ body.authenticated .auth-screen {
     background: rgba(96, 165, 250, 0.18);
     color: var(--cat-otras);
 }
+.cat-rrss {
+    background: rgba(56, 189, 248, 0.18);
+    color: var(--cat-rrss);
+}
 .estado-badge {
     display: inline-block;
     padding: 2px 8px;
@@ -1044,6 +1049,9 @@ body.authenticated .auth-screen {
 }
 .dot-otras {
     background: var(--cat-otras);
+}
+.dot-rrss {
+    background: var(--cat-rrss);
 }
 .tl-badge {
     display: inline-flex;
