@@ -690,6 +690,17 @@
 
       document.getElementById("dashboard-analytics").innerHTML = `
         <div class="analytics-grid">
+
+          <article class="cans-indicator-card">
+            <div class="cans-indicator-top">
+              <span class="cans-pill">Latas proyectadas</span>
+              <strong>${pendingCans}</strong>
+            </div>
+            <p class="cans-packs-label">${pendingCans === 0 ? 0 : Math.ceil(pendingCans / 24)} Packs de 24 Latas</p>
+            <h3>Latas que debemos destinar en campañas</h3>
+            <p>Suma de latas de campañas activas y pausadas.</p>
+          </article>
+
           <article class="chart-card">
             <div class="chart-card-header">
               <h3>Monto por destinar en categorias</h3>
@@ -722,14 +733,6 @@
             </div>
           </article>
 
-          <article class="cans-indicator-card">
-            <div class="cans-indicator-top">
-              <span class="cans-pill">Latas proyectadas</span>
-              <strong>${pendingCans}</strong>
-            </div>
-            <h3>Latas que se destinaran a las diferentes campañas</h3>
-            <p>Corresponde a la suma de latas de campañas activas y pausadas.</p>
-          </article>
         </div>
       `;
     }

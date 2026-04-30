@@ -513,7 +513,7 @@ body.authenticated .auth-screen {
 .cans-indicator-card p {
     margin-top: 6px;
     color: var(--text-muted);
-    font-size: 12px;
+    font-size: 15px;
     line-height: 1.5;
 }
 .chart-card-body {
@@ -620,9 +620,25 @@ body.authenticated .auth-screen {
     color: var(--success);
     font-weight: 800;
 }
+.cans-packs-label {
+    align-self: center;
+    text-align: center;
+    display: block;
+    align-items: center;
+    border-radius: 999px;
+    padding: 6px 10px;
+    background: rgba(245, 158, 11, 0.12);
+    color: var(--cat-publicidad) !important;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+    width: 60%;
+}
 .stat-card {
-    background: var(--bg-card);
-    border-radius: 12px;
+    background: linear-gradient(180deg, rgba(7, 7, 7, 0.65), rgba(19, 19, 19, 0.95));
+    border-radius: 16px;
     padding: 18px;
     border: 1px solid var(--border);
     transition:
@@ -632,6 +648,26 @@ body.authenticated .auth-screen {
 .stat-card:hover {
     border-color: var(--border-strong);
     transform: translateY(-2px);
+}
+.stat-card.green {
+    background:
+        radial-gradient(circle at top right, rgba(16, 185, 129, 0.14), transparent 35%),
+        linear-gradient(180deg, rgba(7, 7, 7, 0.65), rgba(19, 19, 19, 0.95));
+}
+.stat-card.blue {
+    background:
+        radial-gradient(circle at top right, rgba(96, 165, 250, 0.14), transparent 35%),
+        linear-gradient(180deg, rgba(7, 7, 7, 0.65), rgba(19, 19, 19, 0.95));
+}
+.stat-card.orange {
+    background:
+        radial-gradient(circle at top right, rgba(245, 158, 11, 0.14), transparent 35%),
+        linear-gradient(180deg, rgba(7, 7, 7, 0.65), rgba(19, 19, 19, 0.95));
+}
+.stat-card.red {
+    background:
+        radial-gradient(circle at top right, rgba(239, 68, 68, 0.14), transparent 35%),
+        linear-gradient(180deg, rgba(7, 7, 7, 0.65), rgba(19, 19, 19, 0.95));
 }
 .skeleton-card {
     overflow: hidden;
@@ -701,18 +737,32 @@ body.authenticated .auth-screen {
     font-size: 11px;
     color: var(--text-muted);
     margin-top: 3px;
+    text-align: right;
+    text-transform: uppercase;
 }
 .stat-card.green .value {
     color: var(--success);
+    text-align: right;
+    font-size: 3rem;
 }
 .stat-card.blue .value {
     color: var(--cat-otras);
+    text-align: right;
+    font-size: 3rem;
 }
 .stat-card.orange .value {
     color: var(--warning);
+    text-align: right;
+    font-size: 3rem;
 }
 .stat-card.red .value {
     color: var(--danger);
+    text-align: right;
+    font-size: 3rem;
+}
+.stat-card .value:hover { 
+    font-size: 4rem;
+    transition: font-size 0.3s ease-in-out;
 }
 
 /* ── Section title ── */
