@@ -44,7 +44,7 @@
         <span></span>
       </button>
       <div class="mobile-topbar-brand">
-        <img src="assets/logo-lif-black.png" alt="LIF Energy" class="mobile-brand-image">
+        <img src="assets/logo-lif-white.png" alt="LIF Energy" class="mobile-brand-image">
         <!-- <strong>LIF Energy</strong> -->
       </div>
       <button class="mobile-new-btn" type="button" onclick="openModal()">+ Agregar</button>
@@ -52,22 +52,22 @@
     <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="closeMobileSidebar()"></div>
     <aside class="sidebar">
       <div class="sidebar-logo">
-        <img src="assets/logo-lif-black.png" alt="LIF Energy" class="sidebar-brand-image">
-        <h1>LIF Energy • Marketing Hub</h1>
+        <img src="assets/logo-lif-white.png" alt="LIF Energy" class="sidebar-brand-image">
+        <h1>Marketing Hub</h1>
         <p>Gestion de estrategias</p>
       </div>
       <nav class="sidebar-nav">
         <div class="nav-item active" data-section="dashboard">
-          <span class="nav-icon">•</span><span>Dashboard</span>
+          <span class="nav-icon">▪</span><span>Dashboard</span>
         </div>
         <div class="nav-item" data-section="timeline">
-          <span class="nav-icon">•</span><span>Timeline</span>
+          <span class="nav-icon">▪</span><span>Timeline de campañas</span>
         </div>
         <div class="nav-item" data-section="mapa">
-          <span class="nav-icon">•</span><span>Mapa</span>
+          <span class="nav-icon">▪</span><span>Mapa de campañas</span>
         </div>
         <div class="nav-item" data-section="todos">
-          <span class="nav-icon">•</span><span>Todas las acciones</span>
+          <span class="nav-icon">▪</span><span>Todas las campañas</span>
         </div>
       </nav>
       <div class="sidebar-footer">
@@ -692,8 +692,8 @@
         <div class="analytics-grid">
           <article class="chart-card">
             <div class="chart-card-header">
-              <h3>Por destinar por categoria</h3>
-              <p>Costo total pendiente de campañas activas y pausadas.</p>
+              <h3>Monto por destinar en categorias</h3>
+              <p>Costo total pendiente de campañas activas y pausadas por categoria de campaña.</p>
             </div>
             <div class="chart-card-body">
               <div class="donut-chart" style="--chart-fill:${pendingChart.background}">
@@ -709,7 +709,7 @@
           <article class="chart-card">
             <div class="chart-card-header">
               <h3>Ya gastado por categoria</h3>
-              <p>Gasto total ejecutado en acciones realizadas.</p>
+              <p>Gasto total ejecutado en campañas realizadas.</p>
             </div>
             <div class="chart-card-body">
               <div class="donut-chart" style="--chart-fill:${completedChart.background}">
@@ -727,8 +727,8 @@
               <span class="cans-pill">Latas proyectadas</span>
               <strong>${pendingCans}</strong>
             </div>
-            <h3>Latas que se destinaran a la campaña</h3>
-            <p>Corresponde a la suma de latas de acciones activas y pausadas, listas para ejecucion.</p>
+            <h3>Latas que se destinaran a las diferentes campañas</h3>
+            <p>Corresponde a la suma de latas de campañas activas y pausadas.</p>
           </article>
         </div>
       `;
@@ -822,22 +822,22 @@
 
       document.getElementById("stats-grid").innerHTML = `
         <div class="stat-card blue">
-          <div class="label">Pendientes</div>
+          <div class="label">Campañas en curso</div>
           <div class="value">${pendingItems.length}</div>
           <div class="sub">activas + pausadas</div>
         </div>
         <div class="stat-card green">
-          <div class="label">Por destinar</div>
+          <div class="label">Monto pendiente en campañas</div>
           <div class="value">${money(activeAmount)}</div>
           <div class="sub">${activeItems.length} acciones ACTIVAS</div>
         </div>
         <div class="stat-card orange">
-          <div class="label">Ya gastado</div>
+          <div class="label">Ya gastado en campañas</div>
           <div class="value">${money(completedAmount)}</div>
           <div class="sub">${completedItems.length} acciones REALIZADAS</div>
         </div>
         <div class="stat-card red">
-          <div class="label">Canceladas</div>
+          <div class="label">Campañas Canceladas</div>
           <div class="value">${canceledItems.length}</div>
           <div class="sub">acciones canceladas</div>
         </div>
@@ -869,7 +869,7 @@
       document.getElementById("pending-by-cat").innerHTML = html || `
         <div class="empty">
           <div class="eicon">0</div>
-          <p>No hay acciones pendientes para mostrar.</p>
+          <p>No hay campañas pendientes para mostrar.</p>
         </div>`;
     }
 
@@ -898,7 +898,7 @@
         container.innerHTML = `
           <div class="empty">
             <div class="eicon">0</div>
-            <p>No hay acciones en los proximos ${days} dias con ese filtro.</p>
+            <p>No hay campañas en los proximos ${days} dias con ese filtro.</p>
           </div>`;
         return;
       }
