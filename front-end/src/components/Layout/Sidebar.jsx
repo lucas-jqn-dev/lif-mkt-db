@@ -2,6 +2,7 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import { useApp } from '../../context/AppContext'
+import ConfirmDialog from '../ConfirmDialog'
 import logo from '../../../assets/logo-lif-white.png'
 
 const NAV_ITEMS = [
@@ -75,6 +76,7 @@ export default function Sidebar() {
   const { lastUpdated, error } = useApp()
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
+  const [confirmLogout, setConfirmLogout] = useState(false)
 
   function handleLogout() {
     logout()
@@ -116,10 +118,20 @@ export default function Sidebar() {
           <SyncIndicator lastUpdated={lastUpdated} hasError={!!error} />
           <div className="sidebar-user">
             <span className="user-name">{user?.username || user?.name || 'Usuario'}</span>
-            <button className="btn-logout" onClick={handleLogout}>Salir</button>
+            <button className="btn-logout" onClick={() => setConfirmLogout(true)}>Salir</button>
           </div>
         </div>
       </nav>
+
+      {confirmLogout && (
+        <ConfirmDialog
+          title="¿Cerrar sesión?"
+          body={null}
+          confirmLabel="Salir"
+          onConfirm={handleLogout}
+          onCancel={() => setConfirmLogout(false)}
+        />
+      )}
     </>
   )
 }

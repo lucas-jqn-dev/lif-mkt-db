@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import ReactDOM from 'react-dom'
+import ConfirmDialog from './ConfirmDialog'
 import { MapContainer, TileLayer, CircleMarker, useMapEvents, useMap } from 'react-leaflet'
 import { useApp } from '../context/AppContext'
 import { itemsApi } from '../api/client'
@@ -249,136 +250,134 @@ export default function CampaignModal({ editId, onClose, onSaved, showToast }) {
     }
   }
 
-  return ReactDOM.createPortal(
-    <div className="overlay" onClick={requestClose}>
-      <div className="modal" onClick={e => e.stopPropagation()}>
-        <div className="modal-header">
-          <h2 className="modal-title">{editId ? 'Editar campaña' : 'Nueva campaña'}</h2>
-          <button className="modal-close" onClick={requestClose} aria-label="Cerrar">✕</button>
-        </div>
-
-        <form className="modal-body" onSubmit={handleSave}>
-          <div className="form-grid">
-
-            {/* Título */}
-            <div className="field-group field-group--span2" data-field="titulo">
-              <label>Título *</label>
-              <input type="text" placeholder="Nombre del evento" {...field('titulo')} />
-              {errors.titulo && <span className="field-err">{errors.titulo}</span>}
+  return (
+    <>
+      {ReactDOM.createPortal(
+        <div className="overlay" onClick={requestClose}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">{editId ? 'Editar campaña' : 'Nueva campaña'}</h2>
+              <button className="modal-close" onClick={requestClose} aria-label="Cerrar">✕</button>
             </div>
 
-            {/* Categoría + Estado */}
-            <div className="field-group">
-              <label>Categoría</label>
-              <select value={form.categoria} onChange={e => set('categoria', e.target.value)}>
-                {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
-              </select>
-            </div>
-            <div className="field-group">
-              <label>Estado</label>
-              <select value={form.estado} onChange={e => set('estado', e.target.value)}>
-                {STATES.map(s => <option key={s} value={s}>{s}</option>)}
-              </select>
-            </div>
+            <form className="modal-body" onSubmit={handleSave}>
+              <div className="form-grid">
 
-            {/* Fecha + Hora */}
-            <div className="field-group" data-field="fecha">
-              <label>Fecha *</label>
-              <input type="date" {...field('fecha')} />
-              {errors.fecha && <span className="field-err">{errors.fecha}</span>}
-            </div>
-            <div className="field-group" data-field="hora">
-              <label>Hora *</label>
-              <input type="time" {...field('hora')} />
-              {errors.hora && <span className="field-err">{errors.hora}</span>}
-            </div>
+                {/* Título */}
+                <div className="field-group field-group--span2" data-field="titulo">
+                  <label>Título *</label>
+                  <input type="text" placeholder="Nombre del evento" {...field('titulo')} />
+                  {errors.titulo && <span className="field-err">{errors.titulo}</span>}
+                </div>
 
-            {/* Ubicación — moved above cost fields */}
-            <div className="field-group field-group--span2" data-field="location">
-              <label>Ubicación *</label>
-              {errors.location && <span className="field-err">{errors.location}</span>}
-              <LocationPicker
-                lat={form.lat}
-                lng={form.lng}
-                nombre={form.nombre}
-                onPick={handlePick}
-                hasError={!!errors.location}
-              />
-            </div>
+                {/* Categoría + Estado */}
+                <div className="field-group">
+                  <label>Categoría</label>
+                  <select value={form.categoria} onChange={e => set('categoria', e.target.value)}>
+                    {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </div>
+                <div className="field-group">
+                  <label>Estado</label>
+                  <select value={form.estado} onChange={e => set('estado', e.target.value)}>
+                    {STATES.map(s => <option key={s} value={s}>{s}</option>)}
+                  </select>
+                </div>
 
-            {/* Costo evento + Stand */}
-            <div className="field-group">
-              <label>Costo evento ($) *</label>
-              <input type="number" min="0" placeholder="1500" {...field('precio')} />
-              {errors.precio && <span className="field-err">{errors.precio}</span>}
-            </div>
-            <div className="field-group field-group--center">
-              <label>¿Necesita llevar stand?</label>
-              <input
-                type="checkbox"
-                checked={form.need_stand}
-                onChange={e => set('need_stand', e.target.checked)}
-                className="checkbox"
-              />
-            </div>
+                {/* Fecha + Hora */}
+                <div className="field-group" data-field="fecha">
+                  <label>Fecha *</label>
+                  <input type="date" {...field('fecha')} />
+                  {errors.fecha && <span className="field-err">{errors.fecha}</span>}
+                </div>
+                <div className="field-group" data-field="hora">
+                  <label>Hora *</label>
+                  <input type="time" {...field('hora')} />
+                  {errors.hora && <span className="field-err">{errors.hora}</span>}
+                </div>
 
-            {/* Latas */}
-            <div className="field-group" data-field="cans_amount">
-              <label>Cantidad de latas *</label>
-              <input type="number" min="0" placeholder="0" {...field('cans_amount')} />
-              {errors.cans_amount && <span className="field-err">{errors.cans_amount}</span>}
-            </div>
-            <div className="field-group" data-field="cans_cost">
-              <label>Costo total en latas ($) *</label>
-              <input type="number" min="0" placeholder="0" {...field('cans_cost')} />
-              {errors.cans_cost && <span className="field-err">{errors.cans_cost}</span>}
-            </div>
+                {/* Ubicación — moved above cost fields */}
+                <div className="field-group field-group--span2" data-field="location">
+                  <label>Ubicación *</label>
+                  {errors.location && <span className="field-err">{errors.location}</span>}
+                  <LocationPicker
+                    lat={form.lat}
+                    lng={form.lng}
+                    nombre={form.nombre}
+                    onPick={handlePick}
+                    hasError={!!errors.location}
+                  />
+                </div>
 
-            {/* Contacto */}
-            <div className="field-group">
-              <label>Teléfono contacto</label>
-              <input type="tel" placeholder="+56 9 0000 0000" {...field('telefono')} />
-            </div>
-            <div className="field-group">
-              <label>Correo contacto</label>
-              <input type="email" placeholder="contacto@ejemplo.com" {...field('correo')} />
-            </div>
+                {/* Costo evento + Stand */}
+                <div className="field-group">
+                  <label>Costo evento ($) *</label>
+                  <input type="number" min="0" placeholder="1500" {...field('precio')} />
+                  {errors.precio && <span className="field-err">{errors.precio}</span>}
+                </div>
+                <div className="field-group field-group--center">
+                  <label>¿Necesita llevar stand?</label>
+                  <input
+                    type="checkbox"
+                    checked={form.need_stand}
+                    onChange={e => set('need_stand', e.target.checked)}
+                    className="checkbox"
+                  />
+                </div>
 
-            {/* Obs */}
-            <div className="field-group field-group--span2">
-              <label>Observaciones</label>
-              <textarea rows={2} placeholder="Notas adicionales..." {...field('obs')} />
-            </div>
-          </div>
+                {/* Latas */}
+                <div className="field-group" data-field="cans_amount">
+                  <label>Cantidad de latas *</label>
+                  <input type="number" min="0" placeholder="0" {...field('cans_amount')} />
+                  {errors.cans_amount && <span className="field-err">{errors.cans_amount}</span>}
+                </div>
+                <div className="field-group" data-field="cans_cost">
+                  <label>Costo total en latas ($) *</label>
+                  <input type="number" min="0" placeholder="0" {...field('cans_cost')} />
+                  {errors.cans_cost && <span className="field-err">{errors.cans_cost}</span>}
+                </div>
 
-          <div className="modal-footer">
-            <button type="button" className="btn btn-ghost" onClick={requestClose} disabled={saving}>
-              Cancelar
-            </button>
-            <button type="submit" className="btn btn-primary" disabled={saving}>
-              {saving ? 'Guardando…' : editId ? 'Actualizar' : 'Crear campaña'}
-            </button>
-          </div>
-        </form>
+                {/* Contacto */}
+                <div className="field-group">
+                  <label>Teléfono contacto</label>
+                  <input type="tel" placeholder="+56 9 0000 0000" {...field('telefono')} />
+                </div>
+                <div className="field-group">
+                  <label>Correo contacto</label>
+                  <input type="email" placeholder="contacto@ejemplo.com" {...field('correo')} />
+                </div>
 
-        {/* Dirty-form close confirmation */}
-        {showDirtyConfirm && (
-          <div className="dirty-confirm-overlay" onClick={() => setShowDirtyConfirm(false)}>
-            <div className="dirty-confirm" onClick={e => e.stopPropagation()}>
-              <p className="dirty-confirm-text">Hay cambios sin guardar. ¿Salir de todas formas?</p>
-              <div className="dirty-confirm-actions">
-                <button className="btn btn-ghost btn-sm" onClick={() => setShowDirtyConfirm(false)}>
-                  Seguir editando
+                {/* Obs */}
+                <div className="field-group field-group--span2">
+                  <label>Observaciones</label>
+                  <textarea rows={2} placeholder="Notas adicionales..." {...field('obs')} />
+                </div>
+              </div>
+
+              <div className="modal-footer">
+                <button type="button" className="btn btn-ghost" onClick={requestClose} disabled={saving}>
+                  Cancelar
                 </button>
-                <button className="btn btn-danger btn-sm" onClick={onClose}>
-                  Descartar cambios
+                <button type="submit" className="btn btn-primary" disabled={saving}>
+                  {saving ? 'Guardando…' : editId ? 'Actualizar' : 'Crear campaña'}
                 </button>
               </div>
-            </div>
+            </form>
           </div>
-        )}
-      </div>
-    </div>,
-    document.body
+        </div>,
+        document.body
+      )}
+
+      {showDirtyConfirm && (
+        <ConfirmDialog
+          title="¿Salir sin guardar?"
+          body="Hay cambios sin guardar. ¿Salir de todas formas?"
+          confirmLabel="Descartar cambios"
+          cancelLabel="Seguir editando"
+          onConfirm={onClose}
+          onCancel={() => setShowDirtyConfirm(false)}
+        />
+      )}
+    </>
   )
 }

@@ -45,8 +45,8 @@ function DonutChart({ segments, title }) {
               {total >= 1_000_000
                 ? `$${(total / 1_000_000).toFixed(1)}M`
                 : total >= 1_000
-                ? `$${(total / 1_000).toFixed(0)}K`
-                : money(total)}
+                  ? `$${(total / 1_000).toFixed(0)}K`
+                  : money(total)}
             </text>
           </>
         ) : (
@@ -213,7 +213,7 @@ export default function DashboardPage() {
       <h1 className="page-title">Dashboard</h1>
 
       <div className="stats-grid">
-        <div className="stat-card">
+        <div className="stat-card stat-card--blue">
           <span className="stat-label">Campañas activas</span>
           <span className="stat-value">{stats.pending.length}</span>
         </div>
@@ -221,7 +221,7 @@ export default function DashboardPage() {
           <span className="stat-label">Gasto pendiente</span>
           <span className="stat-value">{money(stats.pendingSpend)}</span>
         </div>
-        <div className="stat-card">
+        <div className="stat-card stat-card--orange">
           <span className="stat-label">Gasto completado</span>
           <span className="stat-value">{money(stats.completedSpend)}</span>
         </div>
@@ -237,18 +237,18 @@ export default function DashboardPage() {
 
       <div className="analytics-row">
         <div className="card">
-          <h2 className="card-title">Distribución pendiente</h2>
+          <h2 className="card-title">Distribución $ pendiente</h2>
           <DonutChart segments={stats.pendingByCat} title="Por categoría" />
         </div>
         <div className="card">
-          <h2 className="card-title">Distribución realizada</h2>
+          <h2 className="card-title">Distribución $ realizada</h2>
           <DonutChart segments={stats.completedByCat} title="Por categoría" />
         </div>
         <div className="card cans-card">
           <h2 className="card-title">Latas pendientes</h2>
-          <div className="cans-value">{stats.totalCans.toLocaleString('es-CL')}</div>
+          <div className="cans-value"><strong>{stats.packs}</strong> <span className="cans-note">(x24 Packs)</span></div>
           <div className="cans-sub">
-            latas · <strong>{stats.packs}</strong> packs <span className="cans-note">(x24)</span>
+            {stats.totalCans.toLocaleString('es-CL')} • Latas
           </div>
         </div>
       </div>
