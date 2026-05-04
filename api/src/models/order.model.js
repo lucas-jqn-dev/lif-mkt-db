@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const orderSchema = new mongoose.Schema(
   {
+    _id: { type: Number },
     status: { type: String, required: true, trim: true },
     open_in_dashboard: { type: Boolean, default: false },
     last_open: { type: Date, default: null }
